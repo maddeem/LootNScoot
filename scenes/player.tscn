@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://b57vc81b1sjgf"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_fcm6k"]
+[ext_resource type="Texture2D" uid="uid://b6p5uexqeods0" path="res://assets/textures/atlases/atlas_1750296996.569.png" id="2_tkl1g"]
+[ext_resource type="Texture2D" uid="uid://brmjmbxic408n" path="res://assets/textures/LightTexture.png" id="3_fkj1d"]
+
+[node name="player" type="Node2D"]
+script = ExtResource("1_fcm6k")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+light_mask = 3
+visibility_layer = 3
+position_smoothing_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
+position = Vector2(0, -30)
+texture = ExtResource("2_tkl1g")
+hframes = 3
+vframes = 3
+frame = 7
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, -16)
+energy = 2.0
+shadow_enabled = true
+texture = ExtResource("3_fkj1d")
+texture_scale = 16.0

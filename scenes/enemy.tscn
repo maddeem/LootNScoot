@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://b22e3q4r0f5up"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_yv6n4"]
+[ext_resource type="Texture2D" uid="uid://cfwuy3uohanp1" path="res://assets/textures/atlases/atlas_1750296913.488.png" id="2_yklxg"]
+
+[node name="Enemy" type="Node2D"]
+script = ExtResource("1_yv6n4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -32)
+texture = ExtResource("2_yklxg")
+hframes = 3
+vframes = 3

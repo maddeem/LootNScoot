@@ -1,0 +1,392 @@
+[gd_scene load_steps=21 format=3 uid="uid://p05w3hef1agr"]
+
+[ext_resource type="Script" path="res://scripts/GameTick.gd" id="1_oug6a"]
+[ext_resource type="Texture2D" uid="uid://biytjx4ng2lr2" path="res://assets/textures/torch.png" id="2_gurs6"]
+[ext_resource type="Texture2D" uid="uid://bfnxicvsb744n" path="res://assets/textures/atlases/atlas_1750216403.197.png" id="2_ruedx"]
+[ext_resource type="Texture2D" uid="uid://biqjtm3lyqh23" path="res://assets/textures/selectionOutline.png" id="2_snjxe"]
+[ext_resource type="Script" path="res://scripts/MouseTracker.gd" id="3_gugnt"]
+[ext_resource type="Texture2D" uid="uid://r7hpcu1jqw" path="res://assets/textures/ember.png" id="3_xw63s"]
+[ext_resource type="Script" path="res://scripts/dungeonGeneration.gd" id="4_jaot8"]
+[ext_resource type="Script" path="res://scripts/pathFinder.gd" id="7_53fc2"]
+
+[sub_resource type="GDScript" id="GDScript_ib2rh"]
+script/source = "extends Node2D
+@onready var generator := $DungeonGenerator
+@onready var tileMap := $\"Level 1\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	var pos : Vector2 = generator.get_random_open_cell()
+	var player = load(\"res://scenes/player.tscn\").instantiate()
+	add_child(player)
+	player.position = pos
+	
+	for i in range(100):
+		pos = generator.get_random_open_cell()
+		var enemy = load(\"res://scenes/enemy.tscn\").instantiate()
+		enemy.position = pos
+		add_child(enemy)
+	
+	
+"
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_nj0nf"]
+polygon = PackedVector2Array(0.353554, -65.4074, -56.5, -32, 1, 1.5, 56.5, -32)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_2avun"]
+polygon = PackedVector2Array(0.353554, -65.4074, -54.8008, -32.8805, -55.5, 0, 0, 31, 55.5, 0, 55.1543, -33.234)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sqtc3"]
+texture = ExtResource("2_ruedx")
+texture_region_size = Vector2i(128, 128)
+use_texture_padding = false
+1:0/0 = 0
+1:0/0/texture_origin = Vector2i(0, 32)
+1:0/0/y_sort_origin = -128
+2:0/0 = 0
+2:0/0/texture_origin = Vector2i(0, 32)
+2:0/0/y_sort_origin = -128
+3:0/0 = 0
+3:0/0/texture_origin = Vector2i(0, 32)
+3:0/0/y_sort_origin = -128
+4:0/0 = 0
+4:0/0/texture_origin = Vector2i(0, 32)
+4:0/0/y_sort_origin = -16
+4:0/0/custom_data_0 = true
+5:0/0 = 0
+5:0/0/texture_origin = Vector2i(0, 32)
+5:0/0/y_sort_origin = -16
+5:0/0/custom_data_0 = true
+6:0/0 = 0
+6:0/0/texture_origin = Vector2i(0, 32)
+6:0/0/y_sort_origin = -16
+7:0/0 = 0
+7:0/0/texture_origin = Vector2i(0, 32)
+7:0/0/y_sort_origin = -16
+0:1/0 = 0
+0:1/0/texture_origin = Vector2i(0, 32)
+0:1/0/y_sort_origin = -32
+1:1/0 = 0
+1:1/0/texture_origin = Vector2i(0, 32)
+1:1/0/y_sort_origin = -32
+2:1/0 = 0
+2:1/0/texture_origin = Vector2i(0, 32)
+2:1/0/y_sort_origin = -32
+3:1/0 = 0
+3:1/0/texture_origin = Vector2i(0, 32)
+3:1/0/y_sort_origin = -32
+4:1/0 = 0
+4:1/0/texture_origin = Vector2i(0, 32)
+4:1/0/y_sort_origin = -32
+5:1/0 = 0
+5:1/0/texture_origin = Vector2i(0, 32)
+5:1/0/y_sort_origin = -32
+6:1/0 = 0
+6:1/0/texture_origin = Vector2i(0, 32)
+6:1/0/y_sort_origin = -32
+7:1/0 = 0
+7:1/0/texture_origin = Vector2i(0, 32)
+7:1/0/y_sort_origin = -32
+0:2/0 = 0
+0:2/0/texture_origin = Vector2i(0, 32)
+0:2/0/y_sort_origin = -32
+1:2/0 = 0
+1:2/0/texture_origin = Vector2i(0, 32)
+1:2/0/y_sort_origin = -32
+2:2/0 = 0
+2:2/0/texture_origin = Vector2i(0, 32)
+2:2/0/y_sort_origin = -32
+3:2/0 = 0
+3:2/0/texture_origin = Vector2i(0, 32)
+3:2/0/y_sort_origin = -32
+4:2/0 = 0
+4:2/0/texture_origin = Vector2i(0, 32)
+4:2/0/y_sort_origin = -32
+5:2/0 = 0
+5:2/0/texture_origin = Vector2i(0, 32)
+5:2/0/y_sort_origin = -32
+6:2/0 = 0
+6:2/0/texture_origin = Vector2i(0, 32)
+6:2/0/y_sort_origin = -32
+7:2/0 = 0
+7:2/0/texture_origin = Vector2i(0, 32)
+7:2/0/y_sort_origin = -32
+0:3/0 = 0
+0:3/0/texture_origin = Vector2i(0, 32)
+0:3/0/y_sort_origin = -32
+1:3/0 = 0
+1:3/0/texture_origin = Vector2i(0, 32)
+1:3/0/y_sort_origin = -32
+2:3/0 = 0
+2:3/0/texture_origin = Vector2i(0, 32)
+2:3/0/y_sort_origin = -32
+3:3/0 = 0
+3:3/0/texture_origin = Vector2i(0, 32)
+3:3/0/y_sort_origin = -32
+4:3/0 = 0
+4:3/0/texture_origin = Vector2i(0, 32)
+4:3/0/y_sort_origin = -32
+5:3/0 = 0
+5:3/0/texture_origin = Vector2i(0, 32)
+5:3/0/y_sort_origin = -32
+6:3/0 = 0
+6:3/0/texture_origin = Vector2i(0, 32)
+6:3/0/y_sort_origin = -32
+7:3/0 = 0
+7:3/0/texture_origin = Vector2i(0, 32)
+7:3/0/y_sort_origin = -32
+0:4/0 = 0
+0:4/0/texture_origin = Vector2i(0, 32)
+0:4/0/y_sort_origin = -32
+1:4/0 = 0
+1:4/0/texture_origin = Vector2i(0, 32)
+1:4/0/y_sort_origin = -32
+2:4/0 = 0
+2:4/0/texture_origin = Vector2i(0, 32)
+2:4/0/y_sort_origin = -32
+3:4/0 = 0
+3:4/0/texture_origin = Vector2i(0, 32)
+3:4/0/y_sort_origin = -32
+4:4/0 = 0
+4:4/0/texture_origin = Vector2i(0, 32)
+4:4/0/y_sort_origin = -32
+5:4/0 = 0
+5:4/0/texture_origin = Vector2i(0, 32)
+5:4/0/y_sort_origin = -32
+6:4/0 = 0
+6:4/0/texture_origin = Vector2i(0, 32)
+6:4/0/y_sort_origin = -32
+7:4/0 = 0
+7:4/0/texture_origin = Vector2i(0, 32)
+7:4/0/y_sort_origin = -32
+0:5/0 = 0
+0:5/0/texture_origin = Vector2i(0, 32)
+0:5/0/y_sort_origin = -32
+1:5/0 = 0
+1:5/0/texture_origin = Vector2i(0, 32)
+1:5/0/y_sort_origin = -32
+2:5/0 = 0
+2:5/0/texture_origin = Vector2i(0, 32)
+2:5/0/y_sort_origin = -32
+3:5/0 = 0
+3:5/0/texture_origin = Vector2i(0, 32)
+3:5/0/y_sort_origin = -32
+4:5/0 = 0
+4:5/0/texture_origin = Vector2i(0, 32)
+4:5/0/y_sort_origin = -32
+5:5/0 = 0
+5:5/0/texture_origin = Vector2i(0, 32)
+5:5/0/y_sort_origin = -32
+6:5/0 = 0
+6:5/0/texture_origin = Vector2i(0, 32)
+6:5/0/y_sort_origin = -32
+7:5/0 = 0
+7:5/0/texture_origin = Vector2i(0, 32)
+7:5/0/y_sort_origin = -32
+0:6/0 = 0
+0:6/0/texture_origin = Vector2i(0, 32)
+0:6/0/y_sort_origin = -32
+1:6/0 = 0
+1:6/0/texture_origin = Vector2i(0, 32)
+1:6/0/y_sort_origin = -32
+2:6/0 = 0
+2:6/0/texture_origin = Vector2i(0, 32)
+2:6/0/y_sort_origin = -32
+3:6/0 = 0
+3:6/0/texture_origin = Vector2i(0, 32)
+3:6/0/y_sort_origin = -32
+4:6/0 = 0
+4:6/0/texture_origin = Vector2i(0, 32)
+4:6/0/y_sort_origin = -32
+5:6/0 = 0
+5:6/0/texture_origin = Vector2i(0, 32)
+5:6/0/y_sort_origin = -32
+6:6/0 = 0
+6:6/0/texture_origin = Vector2i(0, 32)
+6:6/0/y_sort_origin = -32
+7:6/0 = 0
+7:6/0/texture_origin = Vector2i(0, 32)
+7:6/0/y_sort_origin = -32
+0:7/0 = 0
+0:7/0/texture_origin = Vector2i(0, 32)
+0:7/0/y_sort_origin = -32
+1:7/0 = 0
+1:7/0/texture_origin = Vector2i(0, 32)
+1:7/0/y_sort_origin = -32
+2:7/0 = 0
+2:7/0/texture_origin = Vector2i(0, 32)
+2:7/0/y_sort_origin = -32
+3:7/0 = 0
+3:7/0/texture_origin = Vector2i(0, 32)
+3:7/0/y_sort_origin = -32
+4:7/0 = 0
+4:7/0/texture_origin = Vector2i(0, 32)
+4:7/0/y_sort_origin = -32
+5:7/0 = 0
+5:7/0/texture_origin = Vector2i(0, 32)
+5:7/0/y_sort_origin = -32
+6:7/0 = 0
+6:7/0/texture_origin = Vector2i(0, 32)
+6:7/0/y_sort_origin = -32
+7:7/0 = 0
+7:7/0/texture_origin = Vector2i(0, 32)
+7:7/0/y_sort_origin = -32
+0:0/next_alternative_id = 2
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 32)
+0:0/0/y_sort_origin = -16
+0:0/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_nj0nf")
+0:0/0/custom_data_0 = true
+0:0/1 = 1
+0:0/1/texture_origin = Vector2i(0, 32)
+0:0/1/modulate = Color(0, 0, 0, 1)
+0:0/1/y_sort_origin = -16
+0:0/1/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_2avun")
+0:0/1/custom_data_0 = true
+
+[sub_resource type="TileSet" id="TileSet_7imj7"]
+tile_shape = 1
+tile_layout = 4
+tile_size = Vector2i(111, 62)
+occlusion_layer_0/light_mask = 1
+occlusion_layer_0/sdf_collision = true
+custom_data_layer_0/name = "PathBlock"
+custom_data_layer_0/type = 1
+sources/0 = SubResource("TileSetAtlasSource_sqtc3")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d412i"]
+texture = ExtResource("2_snjxe")
+texture_region_size = Vector2i(128, 128)
+0:0/next_alternative_id = 3
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 32)
+0:0/1 = 1
+0:0/1/texture_origin = Vector2i(0, 32)
+0:0/1/modulate = Color(0, 1, 0, 1)
+0:0/2 = 2
+0:0/2/texture_origin = Vector2i(32, 0)
+0:0/2/modulate = Color(1, 1, 0, 1)
+
+[sub_resource type="TileSet" id="TileSet_7cmud"]
+tile_shape = 1
+tile_layout = 4
+tile_size = Vector2i(111, 62)
+sources/0 = SubResource("TileSetAtlasSource_d412i")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lhko8"]
+radius = 6.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xs8ek"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 4
+particles_anim_loop = true
+
+[sub_resource type="Gradient" id="Gradient_4ql2f"]
+offsets = PackedFloat32Array(0, 0.357542, 0.659218, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.427481, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_i11dv"]
+gradient = SubResource("Gradient_4ql2f")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ivm2i"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 9.0
+orbit_velocity_min = 9.49949e-08
+orbit_velocity_max = 9.49949e-08
+radial_velocity_min = -2.23517e-05
+radial_velocity_max = 4.99998
+gravity = Vector3(0, -98, 0)
+scale_min = 0.5
+color_ramp = SubResource("GradientTexture1D_i11dv")
+hue_variation_min = -2.23517e-08
+hue_variation_max = -2.23517e-08
+anim_speed_min = 1.0
+anim_speed_max = 2.0
+turbulence_noise_strength = 7.83
+
+[node name="World" type="CanvasModulate"]
+modulate = Color(0.412152, 0.412152, 0.412152, 1)
+y_sort_enabled = true
+texture_filter = 2
+color = Color(0, 0, 0, 1)
+script = SubResource("GDScript_ib2rh")
+
+[node name="GameTick" type="Node" parent="."]
+script = ExtResource("1_oug6a")
+
+[node name="Level 1" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_set = SubResource("TileSet_7imj7")
+
+[node name="MouseTracker" type="TileMapLayer" parent="."]
+z_index = 1
+tile_set = SubResource("TileSet_7cmud")
+script = ExtResource("3_gugnt")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(-232, -285)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_lhko8")
+
+[node name="Torch" type="Sprite2D" parent="StaticBody2D/CollisionShape2D"]
+position = Vector2(0, -39)
+texture = ExtResource("2_gurs6")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="StaticBody2D/CollisionShape2D/Torch"]
+texture_filter = 1
+texture_repeat = 1
+material = SubResource("CanvasItemMaterial_xs8ek")
+position = Vector2(0, -32)
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_ivm2i")
+texture = ExtResource("3_xw63s")
+lifetime = 0.8
+
+[node name="DungeonGenerator" type="Node" parent="."]
+script = ExtResource("4_jaot8")
+width = 100
+height = 100
+level1 = NodePath("../Level 1")
+
+[node name="PathFinder" type="Node2D" parent="."]
+script = ExtResource("7_53fc2")
+dungeonGenerator = NodePath("../DungeonGenerator")
+mouseTracker = NodePath("../MouseTracker")
+floorTiles = NodePath("../Level 1")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control"]
+visibility_layer = 2
+layout_mode = 1
+offset_right = 91.0
+offset_bottom = 23.0
+text = "HIgdfgdfgdf"
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control"]
+visibility_layer = 2
+layout_mode = 1
+offset_top = 25.0
+offset_right = 91.0
+offset_bottom = 48.0
+text = "HIgdfgdfgdf"
+
+[node name="Label3" type="Label" parent="CanvasLayer/Control"]
+visibility_layer = 2
+layout_mode = 1
+offset_top = 47.0
+offset_right = 91.0
+offset_bottom = 70.0
+text = "HIgdfgdfgdf"
