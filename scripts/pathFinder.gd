@@ -33,6 +33,8 @@ static func calculate_path(start : Vector2i, end : Vector2i) -> PackedVector2Arr
 
 static func set_cell_blocked(pos : Vector2, state : bool) -> void:
 	var cell = instance.floorTiles.local_to_map(pos)
+	if astar.is_in_boundsv(cell) == false:
+		return
 	var weight = astar.get_point_weight_scale(cell)
 	if state:
 		astar.set_point_weight_scale(cell,weight + 100)
@@ -41,6 +43,8 @@ static func set_cell_blocked(pos : Vector2, state : bool) -> void:
 
 static func is_cell_blocked(pos) -> bool:
 	var cell = instance.floorTiles.local_to_map(pos)
+	if astar.is_in_boundsv(cell) == false:
+		return true
 	return astar.get_point_weight_scale(cell) > 1
 
 const neighbors = [Vector2i(0, 1), Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0),
@@ -51,8 +55,8 @@ static func update_flow_field(startList : PackedVector2Array) -> void:
 	var listCur : Array[Vector2i] = []
 	var listNext : Array[Vector2i] = []
 	var tiles : TileMapLayer = instance.floorTiles
-	var count = 0
 	var distance = 0
+	cellData = {}
 	for pos in startList:
 		listNext.append(tiles.local_to_map(pos))
 	while listNext.size() > 0:
@@ -77,7 +81,7 @@ static func get_flow_field(pos : Vector2) -> Vector2:
 	var pos2 = tiles.local_to_map(pos)
 	var idx = pos2.x * 1e7 + pos2.y
 	if cellData.has(idx) == false:
-		return Vector2.ZERO
+		return pos
 	var dist = cellData[idx]
 	var directRouteList = []
 	var exploreList = []

@@ -21,6 +21,7 @@ func _input(event: InputEvent):
 func _process(_delta: float) -> void:
 	$"../CanvasLayer/Control/Label2".text = str(PathFinder.get_cell(get_global_mouse_position()))
 	$"../CanvasLayer/Control/Label3".text = str(PathFinder.is_cell_blocked(get_global_mouse_position()))
+	$"../CanvasLayer/Control/Label".text = str(Engine.get_frames_per_second())
 	if GameTick.stepsRemaining > 0:
 		return
 	var mpos = get_global_mouse_position()
