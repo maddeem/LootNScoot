@@ -2,32 +2,31 @@ extends Node
 class_name GameTick
 const INTERP_TIME := 0.2
 static var currentDelta := 0.0
-static var stepsRemaining := 0
+static var stepsRemaining : int
+static var stepsLast : int
 static var instance : GameTick
+static var doingNothing := true
 
-signal delta_update( delta : float)
-signal step_update
-signal start
-static func push_forward( amount : int) ->void:
-	if stepsRemaining == 0 and amount > 0:
-		instance.start.emit()
-	stepsRemaining += amount
+signal pushNext
 
-static func attach( process : Callable, step : Callable, startOfStep = null):
-	instance.step_update.connect(step)
-	instance.delta_update.connect(process)
-	if startOfStep is Callable:
-		instance.start.connect(startOfStep)
+static func push_forward(mult : float = 1.0) ->void:
+	doingNothing = false
+	stepsRemaining = ActionPoints.update(mult)
+	ActionPoints.start_new_turn()
 
 func _process(delta: float) -> void:
 	if stepsRemaining <= 0:
+		doingNothing = true
+		if stepsRemaining != stepsLast:
+			pushNext.emit()
 		return
 	currentDelta = currentDelta + delta
 	if currentDelta >= INTERP_TIME:
+		stepsLast = stepsRemaining
 		stepsRemaining -= 1
-		step_update.emit()
+		ActionPoints.start_new_turn()
 		currentDelta -= INTERP_TIME
-	delta_update.emit(currentDelta/INTERP_TIME)
+	ActionPoints.interpolateTurn(currentDelta/INTERP_TIME)
 
 func _ready():
 	instance = self

@@ -18,14 +18,15 @@ script/source = "extends Node2D
 func _ready() -> void:
 	var pos : Vector2 = generator.get_random_open_cell()
 	var player = load(\"res://scenes/player.tscn\").instantiate()
-	player.position = pos
 	add_child(player)
+	player.position = pos
 	
 	for i in range(100):
 		pos = generator.get_random_open_cell()
 		var enemy = load(\"res://scenes/enemy.tscn\").instantiate()
 		enemy.position = pos
 		add_child(enemy)
+
 "
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_nj0nf"]

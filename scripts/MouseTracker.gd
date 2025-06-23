@@ -14,7 +14,7 @@ var lastDisplayed : PackedVector2Array
 
 func _input(event: InputEvent):
 	if event.is_action_pressed("Click"):
-		Player.instance.set_path(lastDisplayed)
+		Player.instance.set_path(lastDisplayed.duplicate())
 		for cell in lastDisplayed:
 			erase_cell(local_to_map(cell))
 
@@ -22,7 +22,7 @@ func _process(_delta: float) -> void:
 	$"../CanvasLayer/Control/Label2".text = str(PathFinder.get_cell(get_global_mouse_position()))
 	$"../CanvasLayer/Control/Label3".text = str(PathFinder.is_cell_blocked(get_global_mouse_position()))
 	$"../CanvasLayer/Control/Label".text = str(Engine.get_frames_per_second())
-	if GameTick.stepsRemaining > 0:
+	if GameTick.doingNothing == false:
 		return
 	var mpos = get_global_mouse_position()
 	var start = local_to_map(mpos)
