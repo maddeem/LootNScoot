@@ -16,6 +16,8 @@ script/source = "extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	var vp = get_viewport()
+	vp.snap_2d_transforms_to_pixel = true
 	var pos : Vector2 = generator.get_random_open_cell()
 	var player = load(\"res://scenes/player.tscn\").instantiate()
 	player.position = pos

@@ -26,7 +26,7 @@ static func start_new_turn():
 		obj.step_func.call()
 		if GameTick.stepsRemaining == 0:
 			return
-
+			
 static func interpolateTurn(delta : float):
 	for obj in selfList:
 		if obj.canInterp:

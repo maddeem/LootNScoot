@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://b22e3q4r0f5up"]
+[gd_scene load_steps=9 format=3 uid="uid://b22e3q4r0f5up"]
 
 [ext_resource type="Script" path="res://scripts/enemy.gd" id="1_yv6n4"]
 [ext_resource type="Script" path="res://scripts/stat.gd" id="2_5txq4"]
-[ext_resource type="Texture2D" uid="uid://cfwuy3uohanp1" path="res://assets/textures/atlases/atlas_1750296913.488.png" id="2_yklxg"]
 [ext_resource type="Script" path="res://scripts/StatHolder.gd" id="3_vrpi1"]
+[ext_resource type="Shader" path="res://shaders/outline.gdshader" id="4_4cy2f"]
+[ext_resource type="Texture2D" uid="uid://cacl4frucssqd" path="res://assets/textures/atlases/atlas_1750729625.492.png" id="4_tyngn"]
 
 [sub_resource type="Resource" id="Resource_tae6g"]
 script = ExtResource("2_5txq4")
@@ -15,13 +16,20 @@ min_value = 0.0
 script = ExtResource("3_vrpi1")
 StatList = Array[ExtResource("2_5txq4")]([SubResource("Resource_tae6g")])
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gg0el"]
+shader = ExtResource("4_4cy2f")
+shader_parameter/allow_out_of_bounds = false
+shader_parameter/outline_thickness = 2.0
+shader_parameter/outline_color = Color(0.0562916, 0.0562916, 0.0562916, 1)
+
 [node name="Enemy" type="Node2D"]
 script = ExtResource("1_yv6n4")
 stat = SubResource("Resource_qn0mf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_gg0el")
 position = Vector2(0, -32)
-scale = Vector2(1.2, 1.2)
-texture = ExtResource("2_yklxg")
+scale = Vector2(2, 2)
+texture = ExtResource("4_tyngn")
 hframes = 3
 vframes = 3
