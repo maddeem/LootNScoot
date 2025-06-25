@@ -49,6 +49,31 @@ static func is_cell_blocked(pos) -> bool:
 
 const neighbors = [Vector2i(0, 1), Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0),
 						Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]
+						
+static func get_enemies_in_range(pos : Vector2, range : int) -> Array[Enemy]:
+	var visited  = {}
+	var listCur : Array[Vector2i] = []
+	var listNext : Array[Vector2i] = []
+	var tiles : TileMapLayer = instance.floorTiles
+	var distance = 0
+	var list : Array[Enemy] = []
+	listNext.append(tiles.local_to_map(pos))
+	while listNext.size() > 0 and distance != range:
+		listCur = listNext.duplicate()
+		listNext = []
+		for v in listCur:
+			for n in neighbors:
+				var vec = n + v
+				var idx = vec.x * 1e7 + vec.y
+				if visited.has(idx):
+					continue
+				visited[idx] = true
+				listNext.append(vec)
+				if Enemy.position2Enemy.has(vec):
+					list.append(Enemy.position2Enemy[vec])
+		distance += 1
+	return list
+
 static var cellData = {}
 static func update_flow_field(startList : PackedVector2Array) -> void:
 	var visited  = {}

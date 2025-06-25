@@ -54,8 +54,10 @@ func set_path(path : PackedVector2Array) -> void:
 		GameTick.push_forward(1/stat.speed.get_total())
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("Skip"):
+	if event.is_action_pressed("Skip") and GameTick.doingNothing:
 		var list = PackedVector2Array()
+		nextPos = position
+		startPos = position
 		list.append(position)
 		PathFinder.update_flow_field(list)
 		PathFinder.set_cell_blocked(nextPos,false)

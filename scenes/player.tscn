@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b57vc81b1sjgf"]
+[gd_scene load_steps=12 format=3 uid="uid://b57vc81b1sjgf"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_fcm6k"]
 [ext_resource type="Script" path="res://scripts/stat.gd" id="2_0amcb"]
@@ -6,11 +6,13 @@
 [ext_resource type="Script" path="res://scripts/StatHolder.gd" id="3_62wel"]
 [ext_resource type="Texture2D" uid="uid://brmjmbxic408n" path="res://assets/textures/LightTexture.png" id="3_fkj1d"]
 [ext_resource type="Shader" path="res://shaders/outline.gdshader" id="4_ouquo"]
+[ext_resource type="PackedScene" uid="uid://d263n0du5xgy6" path="res://scenes/weapons/effects/swordSlash.tscn" id="5_8b1yo"]
+[ext_resource type="PackedScene" uid="uid://kiv27hl2adh4" path="res://scenes/weapons/Sword.tscn" id="7_dni5t"]
 
 [sub_resource type="Resource" id="Resource_3wmld"]
 script = ExtResource("2_0amcb")
 name = "speed"
-base_value = 2.0
+base_value = 1.0
 min_value = 0.0
 
 [sub_resource type="Resource" id="Resource_17qrh"]
@@ -26,6 +28,9 @@ shader_parameter/outline_color = Color(0, 0, 0, 1)
 [node name="player" type="Node2D"]
 script = ExtResource("1_fcm6k")
 stat = SubResource("Resource_17qrh")
+
+[node name="Sword" parent="." instance=ExtResource("7_dni5t")]
+effect = ExtResource("5_8b1yo")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 light_mask = 3
@@ -44,6 +49,7 @@ frame = 7
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 position = Vector2(0, -32)
+scale = Vector2(1, 0.75)
 energy = 2.0
 blend_mode = 2
 shadow_enabled = true

@@ -13,7 +13,7 @@ static func Grid2Cord(cord : Vector2i) -> Vector2:
 var lastDisplayed : PackedVector2Array
 
 func _input(event: InputEvent):
-	if event.is_action_pressed("Click"):
+	if event.is_action_pressed("Click") and GameTick.doingNothing:
 		Player.instance.set_path(lastDisplayed.duplicate())
 		for cell in lastDisplayed:
 			erase_cell(local_to_map(cell))

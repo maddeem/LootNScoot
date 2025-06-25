@@ -1,6 +1,6 @@
 class_name Stat extends Resource
 
-@export var name : String
+@export var name : String = ""
 @export var base_value: float = 0.0:
 	set(value):
 		base_value = max(value,min_value)
@@ -17,6 +17,17 @@ func apply_modifier(mod: float, is_percentage: bool = false):
 
 func get_total() -> float:
 	return (base_value + flat_modifier) * per_modifier
+
+func get_current() -> float:
+	return current_value
+
+func increment() -> void:
+	current_value += get_total()
+
+func use_total() -> int:
+	var ret = floor(current_value)
+	current_value -= ret
+	return ret
 
 func get_percent_of_total() -> float:
 	return current_value / get_total()
