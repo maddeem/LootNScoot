@@ -34,8 +34,6 @@ static func start_new_turn():
 				continue
 			obj.turns -= 1
 			obj.step_func.call()
-			if GameTick.stepsRemaining == 0:
-				return
 			
 static func interpolateTurn(delta : float):
 	var i = 0
@@ -65,8 +63,12 @@ static func update(mult : float) -> int:
 				break
 		else:
 			obj.current_points += obj.get_points.call() * mult
-			obj.turns = floor(obj.current_points)
+			obj.turns += floor(obj.current_points)
 			obj.current_points -= obj.turns
 			maxTurn = max(obj.turns, maxTurn)
 			i += 1
 	return maxTurn
+
+func extend_turn(amount):
+	turns += amount
+	GameTick.stepsRemaining = max(GameTick.stepsRemaining, turns)

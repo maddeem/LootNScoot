@@ -50,7 +50,7 @@ static func is_cell_blocked(pos) -> bool:
 const neighbors = [Vector2i(0, 1), Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0),
 						Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]
 						
-static func get_enemies_in_range(pos : Vector2, range : int) -> Array[Enemy]:
+static func get_enemies_in_range(pos : Vector2, whatRange : int) -> Array[Enemy]:
 	var visited  = {}
 	var listCur : Array[Vector2i] = []
 	var listNext : Array[Vector2i] = []
@@ -58,7 +58,7 @@ static func get_enemies_in_range(pos : Vector2, range : int) -> Array[Enemy]:
 	var distance = 0
 	var list : Array[Enemy] = []
 	listNext.append(tiles.local_to_map(pos))
-	while listNext.size() > 0 and distance != range:
+	while listNext.size() > 0 and distance != whatRange:
 		listCur = listNext.duplicate()
 		listNext = []
 		for v in listCur:

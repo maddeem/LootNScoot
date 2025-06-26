@@ -20,7 +20,6 @@ func moveTo(end : Vector2):
 	PathFinder.update_flow_field(list)
 	PathFinder.set_cell_blocked(nextPos,false)
 	if PathFinder.is_cell_blocked(end):
-		GameTick.stepsRemaining = 0
 		currentPath.clear()
 		nextPos = startPos
 		PathFinder.set_cell_blocked(nextPos,true)

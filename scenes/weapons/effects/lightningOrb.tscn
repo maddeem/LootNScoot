@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://obvuddggkfk1"]
+
+[ext_resource type="Texture2D" uid="uid://cx535ysna8ymk" path="res://assets/textures/lightningAtlas.png" id="1_xd3kc"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtbje"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 5
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_qkssw"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.535088, 1)
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bl3gt"]
+gradient = SubResource("Gradient_qkssw")
+width = 64
+
+[sub_resource type="Curve" id="Curve_emchi"]
+bake_resolution = 64
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.34507, 1), -6.08572, -6.08572, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_il04v"]
+width = 64
+curve = SubResource("Curve_emchi")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m6ijj"]
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
+spread = 180.0
+initial_velocity_max = 64.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.25
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_il04v")
+color = Color(0.784314, 0.784314, 1, 1)
+color_ramp = SubResource("GradientTexture1D_bl3gt")
+
+[node name="Lightning Orb" type="GPUParticles2D"]
+material = SubResource("CanvasItemMaterial_wtbje")
+process_material = SubResource("ParticleProcessMaterial_m6ijj")
+texture = ExtResource("1_xd3kc")
+lifetime = 0.35

@@ -17,6 +17,7 @@ func _input(event: InputEvent):
 		Player.instance.set_path(lastDisplayed.duplicate())
 		for cell in lastDisplayed:
 			erase_cell(local_to_map(cell))
+		lastDisplayed.clear()
 
 func _process(_delta: float) -> void:
 	$"../CanvasLayer/Control/Label2".text = str(PathFinder.get_cell(get_global_mouse_position()))

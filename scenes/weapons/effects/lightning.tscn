@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://cb3w6mcep4f5p"]
+
+[ext_resource type="Shader" path="res://shaders/lightning.gdshader" id="1_slmrj"]
+[ext_resource type="Texture2D" uid="uid://de4qea0ke625i" path="res://assets/textures/Lightning.png" id="2_323f8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ixox1"]
+resource_local_to_scene = true
+shader = ExtResource("1_slmrj")
+shader_parameter/tileScale = 1.0
+shader_parameter/speed = 1.0
+shader_parameter/wave1_amplitude = 0.25
+shader_parameter/wave1_frequency = 2.06
+shader_parameter/wave1_speed = 0.8
+shader_parameter/wave2_amplitude = -1.0
+shader_parameter/wave2_frequency = 15.25
+shader_parameter/wave2_speed = 23.59
+shader_parameter/wave3_amplitude = 0.01
+shader_parameter/wave3_frequency = 9.73
+shader_parameter/wave3_speed = 37.135
+shader_parameter/dampening_strength = 2.0
+shader_parameter/dampening_power = 2.0
+shader_parameter/modulate = Color(1, 1, 1, 1)
+
+[sub_resource type="GDScript" id="GDScript_utkjt"]
+script/source = "@tool
+extends Sprite2D
+@export var color : Color:
+	set(value):
+		color = value
+		_change_color()
+
+func _change_color():
+	var mat : ShaderMaterial = material
+	mat.set_shader_parameter(\"modulate\",color)
+"
+
+[node name="Node2D" type="Sprite2D"]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_ixox1")
+skew = -0.616101
+texture = ExtResource("2_323f8")
+script = SubResource("GDScript_utkjt")
+color = Color(1, 1, 1, 1)

@@ -12,14 +12,14 @@ script/source = "extends Node2D
 
 func step():
 	var enemies = PathFinder.get_enemies_in_range(global_position,stat.range.get_total())
-	stat.count.increment()
-	for i in range(min(enemies.size(),stat.count.use_total())):
+	stat.multistrike.increment()
+	for i in range(min(enemies.size(),stat.multistrike.use_total())):
 		var e = enemies[i]
 		var eff = effect.instantiate()
 		eff.top_level = true
 		add_child(eff)
-		eff.rotation = Math.angle_between(e.nextPos,global_position)
-		eff.global_position = e.nextPos
+		eff.rotation = Math.angle_between(e.global_position,global_position)
+		eff.global_position = e.global_position
 		e.queue_free()
 "
 
@@ -31,7 +31,7 @@ min_value = 0.0
 
 [sub_resource type="Resource" id="Resource_ftnex"]
 script = ExtResource("1_03483")
-name = "count"
+name = "multistrike"
 base_value = 1.0
 min_value = 0.0
 

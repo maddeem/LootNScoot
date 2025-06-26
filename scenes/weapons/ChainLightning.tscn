@@ -1,0 +1,132 @@
+[gd_scene load_steps=12 format=3 uid="uid://xm1hxqqp4oav"]
+
+[ext_resource type="Script" path="res://scripts/stat.gd" id="1_aj1rt"]
+[ext_resource type="Script" path="res://scripts/StatHolder.gd" id="2_j8sya"]
+[ext_resource type="PackedScene" uid="uid://cb3w6mcep4f5p" path="res://scenes/weapons/effects/lightning.tscn" id="3_wu5ah"]
+[ext_resource type="PackedScene" uid="uid://obvuddggkfk1" path="res://scenes/weapons/effects/lightningOrb.tscn" id="4_3gofd"]
+
+[sub_resource type="GDScript" id="GDScript_ddwwi"]
+script/source = "extends Node2D
+@export var stat : StatHolder
+@onready var chainHit := ActionPoints.new(stat.chain_speed.get_total,chain)
+@onready var action := ActionPoints.new(stat.speed.get_total,step)
+@export var effect : PackedScene
+@export var effect2 : PackedScene
+var lightnings : Array[lightning] = []
+
+class lightning:
+	var scene : Node2D
+	var sourceLastPosition : Vector2
+	var targetLastPosition : Vector2
+	var bounces : int
+	var hitList : Array[Enemy]
+	var orb1 : Node2D
+	var orb2 : Node2D
+	
+	func _init(parent : Node2D, lightningScene : PackedScene, orbScene : PackedScene, _source : Vector2, _target : Vector2, _bounces : int) -> void:
+		scene = lightningScene.instantiate()
+		parent.add_child(scene)
+		scene.top_level = true
+		orb1 = orbScene.instantiate()
+		scene.add_child(orb1)
+		orb2 = orbScene.instantiate()
+		scene.add_child(orb2)
+		targetLastPosition = _target
+		sourceLastPosition = _source
+		bounces = _bounces
+		update()
+	
+	
+	func update():
+		var pos1 : Vector2 = sourceLastPosition
+		var pos2 : Vector2 = targetLastPosition
+		scene.global_position = (pos1 + pos2) * 0.5
+		scene.rotation = Math.angle_between(pos1,pos2)
+		scene.scale.x = pos1.distance_to(pos2)/256
+		orb1.global_position = pos1
+		orb2.global_position = pos2
+	
+	func destroy():
+		scene.queue_free()
+		orb1.queue_free()
+		orb2.queue_free()
+
+func chain():
+	var castRange = stat.range.get_total()
+	var toRemove = []
+	var toAdd = []
+	for l in lightnings:
+		if l == null: 
+			continue
+		if l.bounces > 0:
+			var enemies = PathFinder.get_enemies_in_range(l.targetLastPosition,castRange)
+			while enemies.size() > 0:
+				var e = enemies.pick_random()
+				enemies.erase(e)
+				if l.hitList.has(e):
+					continue
+				var light = lightning.new(self,effect,effect2,l.targetLastPosition,e.global_position,l.bounces-1)
+				toAdd.append(light)
+				light.hitList = l.hitList
+				light.hitList.append(e)
+				e.queue_free()
+				break
+		toRemove.append(l)
+	for l in toRemove:
+		lightnings.erase(l)
+		l.destroy()
+	lightnings.append_array(toAdd)
+
+func step():
+	var castRange = stat.range.get_total()
+	var enemies = PathFinder.get_enemies_in_range(global_position,castRange)
+	stat.multistrike.increment()
+	for i in range(min(enemies.size(),stat.multistrike.use_total())):
+		var e = enemies.pick_random()
+		enemies.erase(e)
+		stat.bounce.increment()
+		var light = lightning.new(self,effect,effect2,global_position,e.global_position,stat.bounce.use_total())
+		lightnings.append(light)
+		light.hitList.append(e)
+		e.queue_free()
+"
+
+[sub_resource type="Resource" id="Resource_ww4c7"]
+script = ExtResource("1_aj1rt")
+name = "speed"
+base_value = 0.25
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_ftnex"]
+script = ExtResource("1_aj1rt")
+name = "multistrike"
+base_value = 1.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_gjasq"]
+script = ExtResource("1_aj1rt")
+name = "range"
+base_value = 3.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_vnh18"]
+script = ExtResource("1_aj1rt")
+name = "bounce"
+base_value = 5.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_llenr"]
+script = ExtResource("1_aj1rt")
+name = "chain_speed"
+base_value = 1.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_dqn6c"]
+script = ExtResource("2_j8sya")
+StatList = Array[ExtResource("1_aj1rt")]([SubResource("Resource_ww4c7"), SubResource("Resource_ftnex"), SubResource("Resource_gjasq"), SubResource("Resource_vnh18"), SubResource("Resource_llenr")])
+
+[node name="Chainlightning" type="Node2D"]
+script = SubResource("GDScript_ddwwi")
+stat = SubResource("Resource_dqn6c")
+effect = ExtResource("3_wu5ah")
+effect2 = ExtResource("4_3gofd")
