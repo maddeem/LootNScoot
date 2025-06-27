@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=3 uid="uid://bxsay7j1we1aw"]
+
+[ext_resource type="Texture2D" uid="uid://biytjx4ng2lr2" path="res://assets/textures/torch.png" id="1_p5m4q"]
+[ext_resource type="Texture2D" uid="uid://r7hpcu1jqw" path="res://assets/textures/ember.png" id="2_oevkf"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xs8ek"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 4
+particles_anim_loop = true
+
+[sub_resource type="Gradient" id="Gradient_4ql2f"]
+offsets = PackedFloat32Array(0, 0.357542, 0.659218, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.427481, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_i11dv"]
+gradient = SubResource("Gradient_4ql2f")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ivm2i"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 9.0
+orbit_velocity_min = 9.49949e-08
+orbit_velocity_max = 9.49949e-08
+radial_velocity_min = -2.23517e-05
+radial_velocity_max = 4.99998
+gravity = Vector3(0, -98, 0)
+scale_min = 0.5
+color_ramp = SubResource("GradientTexture1D_i11dv")
+hue_variation_min = -2.23517e-08
+hue_variation_max = -2.23517e-08
+anim_speed_min = 1.0
+anim_speed_max = 2.0
+turbulence_noise_strength = 7.83
+
+[node name="Torch" type="Sprite2D"]
+position = Vector2(0, -39)
+texture = ExtResource("1_p5m4q")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+texture_filter = 1
+texture_repeat = 1
+material = SubResource("CanvasItemMaterial_xs8ek")
+position = Vector2(0, -32)
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_ivm2i")
+texture = ExtResource("2_oevkf")
+lifetime = 0.8

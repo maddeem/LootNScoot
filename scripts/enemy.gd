@@ -11,7 +11,6 @@ func _update_facing(from : Vector2,to : Vector2):
 	Sprite.frame = Math.get_sprite_direction(from,to)
 
 func step():
-	position = nextPos
 	startPos = nextPos
 	PathFinder.set_cell_blocked(nextPos,false)
 	position2Enemy.erase(PathFinder.get_cell(nextPos))

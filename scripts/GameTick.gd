@@ -26,7 +26,10 @@ func _process(delta: float) -> void:
 		stepsRemaining -= 1
 		ActionPoints.start_new_turn()
 		currentDelta -= INTERP_TIME
-	ActionPoints.interpolateTurn(currentDelta/INTERP_TIME)
+	if currentDelta + delta >= INTERP_TIME:
+		ActionPoints.interpolateTurn(1.0)
+	else:
+		ActionPoints.interpolateTurn(currentDelta/INTERP_TIME)
 
 func _ready():
 	instance = self

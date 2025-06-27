@@ -13,22 +13,22 @@ func _update_facing(from : Vector2,to : Vector2):
 	Sprite.frame = Math.get_sprite_direction(from,to)
 
 func moveTo(end : Vector2):
-	position = nextPos
 	startPos = nextPos
 	var list = PackedVector2Array()
-	list.append(end)
-	PathFinder.update_flow_field(list)
 	PathFinder.set_cell_blocked(nextPos,false)
 	if PathFinder.is_cell_blocked(end):
 		currentPath.clear()
 		nextPos = startPos
+		list.append(startPos)
 		PathFinder.set_cell_blocked(nextPos,true)
 	else:
+		list.append(end)
 		nextPos = end
 		if nextPos != startPos:
 			_update_facing(startPos,nextPos)
 		PathFinder.set_cell_blocked(nextPos,true)
 		currentPath.remove_at(0)
+	PathFinder.update_flow_field(list)
 
 func step():
 	if currentPath.size() > 0:

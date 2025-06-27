@@ -1,11 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://p05w3hef1agr"]
+[gd_scene load_steps=15 format=3 uid="uid://p05w3hef1agr"]
 
 [ext_resource type="Script" path="res://scripts/GameTick.gd" id="1_oug6a"]
-[ext_resource type="Texture2D" uid="uid://biytjx4ng2lr2" path="res://assets/textures/torch.png" id="2_gurs6"]
+[ext_resource type="PackedScene" uid="uid://b0kel821blc0r" path="res://scenes/preloader.tscn" id="1_sqkn0"]
 [ext_resource type="Texture2D" uid="uid://bfnxicvsb744n" path="res://assets/textures/atlases/atlas_1750216403.197.png" id="2_ruedx"]
 [ext_resource type="Texture2D" uid="uid://biqjtm3lyqh23" path="res://assets/textures/selectionOutline.png" id="2_snjxe"]
 [ext_resource type="Script" path="res://scripts/MouseTracker.gd" id="3_gugnt"]
-[ext_resource type="Texture2D" uid="uid://r7hpcu1jqw" path="res://assets/textures/ember.png" id="3_xw63s"]
 [ext_resource type="Script" path="res://scripts/dungeonGeneration.gd" id="4_jaot8"]
 [ext_resource type="Script" path="res://scripts/pathFinder.gd" id="7_53fc2"]
 
@@ -273,40 +272,6 @@ tile_layout = 4
 tile_size = Vector2i(111, 62)
 sources/0 = SubResource("TileSetAtlasSource_d412i")
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_lhko8"]
-radius = 6.0
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xs8ek"]
-blend_mode = 1
-particles_animation = true
-particles_anim_h_frames = 4
-particles_anim_v_frames = 4
-particles_anim_loop = true
-
-[sub_resource type="Gradient" id="Gradient_4ql2f"]
-offsets = PackedFloat32Array(0, 0.357542, 0.659218, 1)
-colors = PackedColorArray(1, 0, 0, 1, 1, 0.427481, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_i11dv"]
-gradient = SubResource("Gradient_4ql2f")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ivm2i"]
-particle_flag_disable_z = true
-emission_shape = 1
-emission_sphere_radius = 9.0
-orbit_velocity_min = 9.49949e-08
-orbit_velocity_max = 9.49949e-08
-radial_velocity_min = -2.23517e-05
-radial_velocity_max = 4.99998
-gravity = Vector3(0, -98, 0)
-scale_min = 0.5
-color_ramp = SubResource("GradientTexture1D_i11dv")
-hue_variation_min = -2.23517e-08
-hue_variation_max = -2.23517e-08
-anim_speed_min = 1.0
-anim_speed_max = 2.0
-turbulence_noise_strength = 7.83
-
 [node name="World" type="CanvasModulate"]
 modulate = Color(0.412152, 0.412152, 0.412152, 1)
 y_sort_enabled = true
@@ -326,27 +291,6 @@ z_index = 1
 tile_set = SubResource("TileSet_7cmud")
 script = ExtResource("3_gugnt")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-y_sort_enabled = true
-position = Vector2(-232, -285)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("CircleShape2D_lhko8")
-
-[node name="Torch" type="Sprite2D" parent="StaticBody2D/CollisionShape2D"]
-position = Vector2(0, -39)
-texture = ExtResource("2_gurs6")
-
-[node name="GPUParticles2D" type="GPUParticles2D" parent="StaticBody2D/CollisionShape2D/Torch"]
-texture_filter = 1
-texture_repeat = 1
-material = SubResource("CanvasItemMaterial_xs8ek")
-position = Vector2(0, -32)
-amount = 20
-process_material = SubResource("ParticleProcessMaterial_ivm2i")
-texture = ExtResource("3_xw63s")
-lifetime = 0.8
-
 [node name="DungeonGenerator" type="Node" parent="."]
 script = ExtResource("4_jaot8")
 width = 100
@@ -358,6 +302,9 @@ script = ExtResource("7_53fc2")
 dungeonGenerator = NodePath("../DungeonGenerator")
 mouseTracker = NodePath("../MouseTracker")
 floorTiles = NodePath("../Level 1")
+
+[node name="Preloader" parent="." instance=ExtResource("1_sqkn0")]
+z_index = 4096
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

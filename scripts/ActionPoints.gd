@@ -36,11 +36,12 @@ static func start_new_turn():
 	for priority in priorities:
 		var bucket = priority_buckets[priority]
 		for obj in bucket:
-			obj.canInterp = obj.turns > 0
-			if obj.canInterp == false:
-				continue
-			obj.turns -= 1
-			obj.step_func.call()
+			if obj != null:
+				obj.canInterp = obj.turns > 0
+				if obj.canInterp == false:
+					continue
+				obj.turns -= 1
+				obj.step_func.call()
 
 static func interpolateTurn(delta : float):
 	# Process all buckets for interpolation
