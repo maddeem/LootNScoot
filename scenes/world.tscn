@@ -310,7 +310,7 @@ turbulence_noise_strength = 7.83
 [node name="World" type="CanvasModulate"]
 modulate = Color(0.412152, 0.412152, 0.412152, 1)
 y_sort_enabled = true
-texture_filter = 1
+texture_filter = 2
 color = Color(0, 0, 0, 1)
 script = SubResource("GDScript_ib2rh")
 

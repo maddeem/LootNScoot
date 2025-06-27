@@ -43,11 +43,11 @@ func incTick():
 
 func _ready():
 	instance = self
-	moveHandler = ActionPoints.new(stat.speed.get_total,step,process)
+	moveHandler = ActionPoints.new(stat.speed.get_total,step,process,0)
 	GameTick.instance.pushNext.connect(incTick)
 
 func set_path(path : PackedVector2Array) -> void:
-	if currentPath.size() == 0 and path.size() > 0:
+	if currentPath.size() == 0 and path.size() > 0 and PathFinder.is_cell_blocked(path[0]) == false:
 		currentPath = path
 		endPos = currentPath[currentPath.size()-1]
 		GameTick.push_forward(1/stat.speed.get_total())
