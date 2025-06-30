@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqm27aq0u0mwn"]
+
+[ext_resource type="Shader" path="res://shaders/transformTest.gdshader" id="1_pcph1"]
+[ext_resource type="Texture2D" uid="uid://dnilnrnxkgwdc" path="res://assets/textures/atlases/atlas_1751053496.211.png" id="2_ps7xx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lh4q3"]
+shader = ExtResource("1_pcph1")
+shader_parameter/animation_time = 0.0
+shader_parameter/slice_duration = 0.8
+shader_parameter/fade_duration = 0.3
+shader_parameter/slice_count = 18
+shader_parameter/slice_angle = 45.0
+shader_parameter/slice_width = 0.019
+shader_parameter/slice_separation = 0.553
+shader_parameter/flash_intensity = 1.5
+shader_parameter/slash_start_color = Color(1, 0, 0, 0)
+shader_parameter/slash_end_color = Color(1, 0, 0, 0)
+shader_parameter/dissolve_scale = 2.0
+
+[node name="Sprite2D2" type="Sprite2D"]
+material = SubResource("ShaderMaterial_lh4q3")
+position = Vector2(0, -32)
+texture = ExtResource("2_ps7xx")
+hframes = 3
+vframes = 3
+frame = 3

@@ -2,10 +2,11 @@ extends Node2D
 class_name PathFinder
 static var instance : PathFinder
 static var astar = AStarGrid2D.new()
+static var cell_size : Vector2
 @onready var space_state = get_world_2d().direct_space_state
 @export_node_path("DungeonGenerator") var dungeonGenerator
 @export_node_path("MouseTracker") var mouseTracker
-@export_node_path("TileMapLayer") var floorTiles
+@export_node_path("FogReactiveTileMapLayer") var floorTiles
 
 func _ready() -> void:
 	instance = self
@@ -14,6 +15,7 @@ func _ready() -> void:
 	floorTiles = get_node(floorTiles)
 	astar.cell_shape = AStarGrid2D.CELL_SHAPE_ISOMETRIC_RIGHT
 	astar.cell_size = mouseTracker.tile_set.tile_size
+	cell_size = mouseTracker.tile_set.tile_size
 	astar.region = Rect2i(0, 0, dungeonGenerator.width, dungeonGenerator.height)
 	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_AT_LEAST_ONE_WALKABLE
 	astar.update()
@@ -31,6 +33,10 @@ static func calculate_path(start : Vector2i, end : Vector2i) -> PackedVector2Arr
 		result.remove_at(0)
 	return result
 
+static func is_los_blocked(cell : Vector2i) -> bool:
+	var data : TileData = instance.floorTiles.get_cell_tile_data(cell)
+	return data == null or data.get_custom_data("PathBlock")
+
 static func set_cell_blocked(pos : Vector2, state : bool) -> void:
 	var cell = instance.floorTiles.local_to_map(pos)
 	if astar.is_in_boundsv(cell) == false:
@@ -42,10 +48,12 @@ static func set_cell_blocked(pos : Vector2, state : bool) -> void:
 		astar.set_point_weight_scale(cell,max(1,weight - 100))
 
 static func is_cell_blocked(pos) -> bool:
-	var cell = instance.floorTiles.local_to_map(pos)
-	if astar.is_in_boundsv(cell) == false:
+	var tiles = instance.floorTiles
+	var cell = tiles.local_to_map(pos)
+	var data : TileData = tiles.get_cell_tile_data(cell)
+	if data == null:
 		return true
-	return astar.get_point_weight_scale(cell) > 1
+	return astar.get_point_weight_scale(cell) > 1 or data.get_custom_data("PathBlock")
 
 const neighbors = [Vector2i(0, 1), Vector2i(0, -1), Vector2i(1, 0), Vector2i(-1, 0),
 						Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]
@@ -58,6 +66,8 @@ static func get_enemies_in_range(pos : Vector2, whatRange : int) -> Array[Enemy]
 	var distance = 0
 	var list : Array[Enemy] = []
 	listNext.append(tiles.local_to_map(pos))
+	if Enemy.position2Enemy.has(listNext[0]):
+		list.append(Enemy.position2Enemy[listNext[0]])
 	while listNext.size() > 0 and distance != whatRange:
 		listCur = listNext.duplicate()
 		listNext = []
@@ -139,3 +149,7 @@ static func get_flow_field2(pos: Vector2) -> Vector2i:
 static func get_cell(pos:Vector2) -> Vector2i:
 	var tiles : TileMapLayer = instance.floorTiles
 	return tiles.local_to_map(pos)
+
+static func from_cell(pos: Vector2i) -> Vector2:
+	var tiles : TileMapLayer = instance.floorTiles
+	return tiles.map_to_local(pos)

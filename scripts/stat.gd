@@ -29,5 +29,9 @@ func use_total() -> int:
 	current_value -= ret
 	return ret
 
+func increment_and_use_total() -> int:
+	increment()
+	return use_total()
+
 func get_percent_of_total() -> float:
 	return current_value / get_total()

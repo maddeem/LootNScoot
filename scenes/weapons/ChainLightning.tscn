@@ -42,7 +42,7 @@ class lightning:
 		var pos2 : Vector2 = targetLastPosition
 		scene.global_position = (pos1 + pos2) * 0.5
 		scene.rotation = Math.angle_between(pos1,pos2)
-		scene.scale.x = pos1.distance_to(pos2)/256
+		scene.scale.x = pos1.distance_to(pos2)/128
 		orb1.global_position = pos1
 		orb2.global_position = pos2
 	
@@ -52,9 +52,10 @@ class lightning:
 		orb2.queue_free()
 
 func chain():
-	var castRange = stat.range.get_total()
+	var castRange = stat.range.increment_and_use_total()
 	var toRemove = []
 	var toAdd = []
+	var hit = false
 	for l in lightnings:
 		if l == null: 
 			continue
@@ -69,32 +70,38 @@ func chain():
 				toAdd.append(light)
 				light.hitList = l.hitList
 				light.hitList.append(e)
-				e.queue_free()
+				hit = true
+				e.destroy()
 				break
 		toRemove.append(l)
 	for l in toRemove:
 		lightnings.erase(l)
 		l.destroy()
 	lightnings.append_array(toAdd)
+	if hit:
+		chainHit.extend_turn(1)
 
 func step():
-	var castRange = stat.range.get_total()
+	var castRange = stat.range.increment_and_use_total()
 	var enemies = PathFinder.get_enemies_in_range(global_position,castRange)
-	stat.multistrike.increment()
-	for i in range(min(enemies.size(),stat.multistrike.use_total())):
+	var hit = false
+	for i in range(min(enemies.size(),stat.multistrike.increment_and_use_total())):
 		var e = enemies.pick_random()
 		enemies.erase(e)
 		stat.bounce.increment()
 		var light = lightning.new(self,effect,effect2,global_position - Vector2(0,32),e.global_position,stat.bounce.use_total())
 		lightnings.append(light)
 		light.hitList.append(e)
-		e.queue_free()
+		e.destroy()
+		hit = true
+	if hit:
+		chainHit.extend_turn(1)
 "
 
 [sub_resource type="Resource" id="Resource_ww4c7"]
 script = ExtResource("1_aj1rt")
 name = "speed"
-base_value = 0.1
+base_value = 0.25
 min_value = 0.0
 
 [sub_resource type="Resource" id="Resource_ftnex"]

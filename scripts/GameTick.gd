@@ -8,6 +8,7 @@ static var instance : GameTick
 static var doingNothing := true
 
 signal pushNext
+signal turnEnded
 
 static func push_forward(mult : float = 1.0) ->void:
 	doingNothing = false
@@ -28,6 +29,7 @@ func _process(delta: float) -> void:
 		currentDelta -= INTERP_TIME
 	if currentDelta + delta >= INTERP_TIME:
 		ActionPoints.interpolateTurn(1.0)
+		turnEnded.emit()
 	else:
 		ActionPoints.interpolateTurn(currentDelta/INTERP_TIME)
 

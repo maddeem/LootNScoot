@@ -1,7 +1,7 @@
 extends Node2D
 class_name Player
 static var instance : Player
-@onready var Sprite = $Sprite2D
+@onready var sprite = $Sprite2D
 var moveHandler : ActionPoints
 var currentPath := PackedVector2Array()
 @export var stat : StatHolder
@@ -10,7 +10,7 @@ var currentPath := PackedVector2Array()
 static var endPos : Vector2
 
 func _update_facing(from : Vector2,to : Vector2):
-	Sprite.frame = Math.get_sprite_direction(from,to)
+	sprite.frame = Math.get_sprite_direction(from,to)
 
 func moveTo(end : Vector2):
 	startPos = nextPos
@@ -28,6 +28,7 @@ func moveTo(end : Vector2):
 			_update_facing(startPos,nextPos)
 		PathFinder.set_cell_blocked(nextPos,true)
 		currentPath.remove_at(0)
+	FogReactiveTileMapLayer.update_fog(PathFinder.get_cell(nextPos), 10)
 	PathFinder.update_flow_field(list)
 
 func step():
@@ -35,7 +36,7 @@ func step():
 		moveTo(currentPath[0]) 
 
 func process(time : float):
-	position = lerp(startPos,nextPos,ease(time,2.0))
+	position = lerp(startPos,nextPos,ease(time,-1.6))
 
 func incTick():
 	if currentPath.size() > 0:
@@ -45,6 +46,7 @@ func _ready():
 	instance = self
 	moveHandler = ActionPoints.new(stat.speed.get_total,step,process,0)
 	GameTick.instance.pushNext.connect(incTick)
+	FogReactiveTileMapLayer.update_fog(PathFinder.get_cell(nextPos), 10)
 
 func set_path(path : PackedVector2Array) -> void:
 	if currentPath.size() == 0 and path.size() > 0 and PathFinder.is_cell_blocked(path[0]) == false:

@@ -1,0 +1,72 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdbfnbigpj7n"]
+
+[sub_resource type="Shader" id="Shader_xdsma"]
+code = "shader_type canvas_item;
+#include \"res://shaders/OutlineInclude.gdshaderinc\"
+// Shadow properties
+uniform float shadow_offset_x = 5.0;
+uniform float shadow_offset_y = 5.0;
+uniform float shadow_blur : hint_range(0.0, 20.0) = 3.0;
+uniform vec4 shadow_color : source_color = vec4(0.0, 0.0, 0.0, 0.6);
+uniform float shadow_spread : hint_range(0.0, 10.0) = 0.0;
+uniform float outline_thickness;
+uniform vec4 outline_color : source_color;
+uniform float shadow_distance : hint_range(0.0, 100.0) = 10.0;
+uniform float shadow_angle : hint_range(0.0, 360.0) = 315.0;
+
+vec4 get_shadow_sample(sampler2D tex, vec2 uv, vec2 pixel_size) {
+    vec4 color = vec4(0.0);
+    float total_weight = 0.0;
+    float angle_rad = radians(shadow_angle);
+    vec2 shadow_offset = vec2(
+        cos(angle_rad) * shadow_distance * pixel_size.x,
+        sin(angle_rad) * shadow_distance * pixel_size.y
+    );
+    if (shadow_offset_x != 0.0 || shadow_offset_y != 0.0) {
+        shadow_offset = vec2(shadow_offset_x * pixel_size.x, shadow_offset_y * pixel_size.y);
+    }
+    int samples = int(shadow_blur * 2.0) + 1;
+    float blur_step = shadow_blur / float(samples);
+    for (int x = -samples; x <= samples; x++) {
+        for (int y = -samples; y <= samples; y++) {
+            vec2 offset = vec2(float(x), float(y)) * blur_step * pixel_size;
+            vec2 sample_uv = uv + shadow_offset + offset;
+            float distance = length(vec2(float(x), float(y)) * blur_step);
+            float weight = exp(-distance * distance / (2.0 * shadow_blur * shadow_blur));
+            vec4 sample_color = texture(tex, sample_uv);
+            color.a += sample_color.a * weight;
+            total_weight += weight;
+        }
+    }
+    if (total_weight > 0.0) {
+        color.a /= total_weight;
+    }
+    if (shadow_spread > 0.0) {
+        color.a = smoothstep(0.0, 1.0, color.a * (1.0 + shadow_spread));
+    }
+    color.rgb = shadow_color.rgb;
+    color.a *= shadow_color.a;
+    return color;
+}
+
+void fragment() {
+	vec2 pixel_size = SCREEN_PIXEL_SIZE;
+	vec4 original_color = texture(TEXTURE,UV);
+	vec4 shadow = get_shadow_sample(TEXTURE, UV, pixel_size);
+	vec3 final_color = mix(shadow.rgb, original_color.rgb, original_color.a);
+	float final_alpha = max(shadow.a, original_color.a);
+	vec4 outline = apply_outline(TEXTURE,UV,outline_thickness,TEXTURE_PIXEL_SIZE,outline_color,COLOR);
+	COLOR = mix(vec4(final_color, final_alpha),outline,outline.a);
+}"
+
+[resource]
+shader = SubResource("Shader_xdsma")
+shader_parameter/shadow_offset_x = -20.0
+shader_parameter/shadow_offset_y = 20.0
+shader_parameter/shadow_blur = 3.0
+shader_parameter/shadow_color = Color(0, 0, 0, 0.6)
+shader_parameter/shadow_spread = 0.0
+shader_parameter/outline_thickness = 2.0
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/shadow_distance = 10.0
+shader_parameter/shadow_angle = 315.0

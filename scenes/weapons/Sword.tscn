@@ -11,9 +11,8 @@ script/source = "extends Node2D
 @export var effect : PackedScene
 
 func step():
-	var enemies = PathFinder.get_enemies_in_range(global_position,stat.range.get_total())
-	stat.multistrike.increment()
-	for i in range(min(enemies.size(),stat.multistrike.use_total())):
+	var enemies = PathFinder.get_enemies_in_range(global_position,stat.range.increment_and_use_total())
+	for i in range(min(enemies.size(),stat.multistrike.increment_and_use_total())):
 		var e = enemies[i]
 		var eff = effect.instantiate()
 		eff.top_level = true

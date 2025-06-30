@@ -1,0 +1,137 @@
+[gd_scene load_steps=12 format=3 uid="uid://b3amy8ead2l75"]
+
+[ext_resource type="Script" path="res://scripts/stat.gd" id="1_8esj0"]
+[ext_resource type="Script" path="res://scripts/StatHolder.gd" id="2_1qyh4"]
+[ext_resource type="PackedScene" uid="uid://4p2ykph7q10y" path="res://scenes/weapons/effects/fireball.tscn" id="3_18lwa"]
+[ext_resource type="PackedScene" uid="uid://dnluolkehlpif" path="res://scenes/weapons/effects/explosion.tscn" id="4_ftwta"]
+
+[sub_resource type="GDScript" id="GDScript_w7w7l"]
+script/source = "extends Node2D
+@export var stat : StatHolder
+@onready var action := ActionPoints.new(stat.speed.get_total,step,null,2)
+@onready var fireballMove := ActionPoints.new(fireball_get_move_speed,update,process,2)
+@export var effect : PackedScene
+@export var effect2 : PackedScene
+var fireballs : Array[fireball] = []
+
+class fireball:
+	var dir : Vector2
+	var scene : Node2D
+	var exposion : PackedScene
+	var truePosition : Vector2
+	var nextPos : Vector2
+	var curPos : Vector2
+	var steps : int
+	var stats : StatHolder
+	var destroyed := false
+	func _init(_parent : Node, _scenePath : PackedScene, _explosion : PackedScene, _rot : float, _pos : Vector2, _steps : int, _stats : StatHolder) -> void:
+		dir = Vector2(cos(_rot),sin(_rot))
+		scene = _scenePath.instantiate()
+		scene.top_level = true
+		scene.position = _pos
+		curPos = _pos
+		nextPos = _pos
+		truePosition = PathFinder.get_cell(_pos)
+		scene.rotation = _rot - 90
+		steps = _steps
+		stats = _stats
+		exposion = _explosion
+		_parent.add_child(scene)
+	
+	func destroy():
+		var area = stats.area.increment_and_use_total()
+		for e in PathFinder.get_enemies_in_range(nextPos,area):
+			if e.visible:
+				var explode = exposion.instantiate()
+				explode.top_level = true
+				scene.get_parent().add_child(explode)
+				explode.position = e.global_position
+			e.destroy()
+		if scene.visible:
+			var explode = exposion.instantiate()
+			explode.top_level = true
+			explode.position = scene.global_position
+			explode.scale = Vector2(4,4) * area
+			scene.get_parent().add_child(explode)
+		scene.queue_free()
+	
+	func move():
+		curPos = nextPos
+		for i in range(stats.move_speed.increment_and_use_total()):
+			truePosition += dir
+			nextPos = PathFinder.from_cell(round(truePosition))
+			steps -= 1
+			if steps < 0 or PathFinder.is_cell_blocked(nextPos):
+				destroyed = true
+				break
+		scene.visible = FogReactiveTileMapLayer.is_cell_visible(nextPos)
+			
+func process(t : float):
+	for ball in fireballs:
+		ball.scene.global_position = lerp(ball.curPos,ball.nextPos,t)
+
+func fireball_get_move_speed():
+	return 1
+
+func update():
+	var destroyList = []
+	for ball in fireballs:
+		ball.move()
+		if ball.destroyed:
+			destroyList.append(ball)
+	await GameTick.instance.turnEnded
+	for ball in destroyList:
+		fireballs.erase(ball)
+		ball.destroy()
+
+func step():
+	var range = stat.range.increment_and_use_total()
+	var enemies = PathFinder.get_enemies_in_range(global_position,range)
+	var count = min(enemies.size(),stat.multistrike.increment_and_use_total())
+	for i in range(count):
+		var e = enemies[i]
+		var rot = Math.angle_between(PathFinder.get_cell(e.nextPos),PathFinder.get_cell(global_position))
+		var ball = fireball.new(self,effect,effect2,rot,global_position,range,stat)
+		fireballs.append(ball)
+"
+
+[sub_resource type="Resource" id="Resource_ovkd8"]
+script = ExtResource("1_8esj0")
+name = "speed"
+base_value = 1.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_wmxrs"]
+script = ExtResource("1_8esj0")
+name = "multistrike"
+base_value = 5.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_m5j8r"]
+script = ExtResource("1_8esj0")
+name = "range"
+base_value = 10.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_epl2c"]
+script = ExtResource("1_8esj0")
+name = "move_speed"
+base_value = 2.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_0n0py"]
+script = ExtResource("1_8esj0")
+name = "area"
+base_value = 1.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_btv3d"]
+script = ExtResource("2_1qyh4")
+StatList = Array[ExtResource("1_8esj0")]([SubResource("Resource_ovkd8"), SubResource("Resource_wmxrs"), SubResource("Resource_m5j8r"), SubResource("Resource_epl2c"), SubResource("Resource_0n0py")])
+
+[node name="Fireball" type="Node2D"]
+z_as_relative = false
+script = SubResource("GDScript_w7w7l")
+stat = SubResource("Resource_btv3d")
+effect = ExtResource("3_18lwa")
+effect2 = ExtResource("4_ftwta")

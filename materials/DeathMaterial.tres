@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c47q68nrr6530"]
+
+[ext_resource type="Shader" path="res://shaders/transformTest.gdshader" id="1_0aj5w"]
+
+[resource]
+shader = ExtResource("1_0aj5w")
+shader_parameter/animation_time = 0.229
+shader_parameter/slice_duration = 0.564
+shader_parameter/fade_duration = 0.3
+shader_parameter/slice_count = 13
+shader_parameter/slice_angle = 3.142
+shader_parameter/slice_width = 0.01
+shader_parameter/slice_separation = 1.0
+shader_parameter/flash_intensity = 1.5
+shader_parameter/slash_start_color = Color(0.638884, 2.02149e-06, 4.81307e-07, 0)
+shader_parameter/slash_end_color = Color(1, 1, 1, 0)

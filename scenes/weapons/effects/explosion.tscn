@@ -1,0 +1,76 @@
+[gd_scene load_steps=6 format=3 uid="uid://dnluolkehlpif"]
+
+[ext_resource type="Texture2D" uid="uid://bgwt2x8g0rp5q" path="res://assets/textures/explosion.png" id="1_jjyc1"]
+
+[sub_resource type="GDScript" id="GDScript_ik8wh"]
+script/source = "extends Sprite2D
+
+func _ready() -> void:
+	$AnimationPlayer.speed_scale = 1.0/GameTick.INTERP_TIME
+"
+
+[sub_resource type="Animation" id="Animation_qcpjv"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [47]
+}
+
+[sub_resource type="Animation" id="Animation_vlphj"]
+resource_name = "birth"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 47]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bk0df"]
+_data = {
+"RESET": SubResource("Animation_qcpjv"),
+"birth": SubResource("Animation_vlphj")
+}
+
+[node name="Sprite2D" type="Sprite2D"]
+modulate = Color(1, 0.808999, 0.66686, 1)
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_jjyc1")
+hframes = 8
+vframes = 6
+frame = 47
+script = SubResource("GDScript_ik8wh")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_bk0df")
+}
+autoplay = "birth"

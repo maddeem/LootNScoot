@@ -4,6 +4,7 @@ extends RefCounted
 static var priority_buckets : Dictionary = {}
 static var priorities : Array
 static var maxTurn : int
+static var cancelTurn : bool
 var current_points : float = 0
 var get_points : Callable
 var step_func : Callable
