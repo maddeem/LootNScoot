@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://m8s5iens2yko"]
+
+[ext_resource type="Texture2D" uid="uid://co58jrjrawndk" path="res://assets/textures/healthbar.png" id="1_iepd2"]
+
+[node name="Healthbar" type="TextureProgressBar"]
+visible = false
+modulate = Color(0, 1, 0, 1)
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -3.0
+offset_right = 14.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(8, 8)
+pivot_offset = Vector2(14, 3)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.1
+value = 1.0
+texture_progress = ExtResource("1_iepd2")

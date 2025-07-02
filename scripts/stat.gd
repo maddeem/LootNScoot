@@ -1,11 +1,12 @@
 class_name Stat extends Resource
 
 @export var name : String = ""
+var current_value : float
 @export var base_value: float = 0.0:
 	set(value):
 		base_value = max(value,min_value)
+		current_value = base_value
 @export var min_value: float = 0
-var current_value = base_value
 var per_modifier := 1.0
 var flat_modifier := 0.0
 
@@ -19,6 +20,10 @@ func get_total() -> float:
 	return (base_value + flat_modifier) * per_modifier
 
 func get_current() -> float:
+	return current_value
+
+func subtract_current(amount : float):
+	current_value = max(current_value-amount,0)
 	return current_value
 
 func increment() -> void:

@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://b57vc81b1sjgf"]
+[gd_scene load_steps=11 format=3 uid="uid://b57vc81b1sjgf"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_fcm6k"]
 [ext_resource type="Script" path="res://scripts/stat.gd" id="2_0amcb"]
 [ext_resource type="Texture2D" uid="uid://b6p5uexqeods0" path="res://assets/textures/atlases/atlas_1750296996.569.png" id="2_tkl1g"]
 [ext_resource type="Script" path="res://scripts/StatHolder.gd" id="3_62wel"]
 [ext_resource type="PackedScene" uid="uid://b3amy8ead2l75" path="res://scenes/weapons/Fireball.tscn" id="4_ptudg"]
+[ext_resource type="PackedScene" uid="uid://xm1hxqqp4oav" path="res://scenes/weapons/ChainLightning.tscn" id="4_xvjx7"]
 [ext_resource type="Material" uid="uid://cdbfnbigpj7n" path="res://materials/OutlineMaterial.tres" id="5_q06xu"]
 
 [sub_resource type="Resource" id="Resource_3wmld"]
@@ -13,13 +14,21 @@ name = "speed"
 base_value = 1.0
 min_value = 0.0
 
+[sub_resource type="Resource" id="Resource_dsbwp"]
+script = ExtResource("2_0amcb")
+name = "sight_range"
+base_value = 5.0
+min_value = 0.0
+
 [sub_resource type="Resource" id="Resource_17qrh"]
 script = ExtResource("3_62wel")
-StatList = Array[ExtResource("2_0amcb")]([SubResource("Resource_3wmld")])
+StatList = Array[ExtResource("2_0amcb")]([SubResource("Resource_3wmld"), SubResource("Resource_dsbwp")])
 
 [node name="player" type="Node2D"]
 script = ExtResource("1_fcm6k")
 stat = SubResource("Resource_17qrh")
+
+[node name="Chainlightning" parent="." instance=ExtResource("4_xvjx7")]
 
 [node name="Fireball" parent="." instance=ExtResource("4_ptudg")]
 

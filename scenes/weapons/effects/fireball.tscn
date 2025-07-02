@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://4p2ykph7q10y"]
+[gd_scene load_steps=9 format=3 uid="uid://4p2ykph7q10y"]
 
 [ext_resource type="Texture2D" uid="uid://kusd54q2sihk" path="res://assets/textures/fireball.png" id="1_yjx5c"]
+[ext_resource type="Texture2D" uid="uid://r7hpcu1jqw" path="res://assets/textures/ember.png" id="2_vupgx"]
 
 [sub_resource type="Animation" id="Animation_lkc3h"]
 resource_name = "birth"
@@ -47,8 +48,7 @@ direction = Vector3(0, -1, 0)
 initial_velocity_min = 5.0
 initial_velocity_max = 10.0
 gravity = Vector3(0, -98, 0)
-scale_min = 5.0
-scale_max = 14.0
+scale_min = 0.5
 color_ramp = SubResource("GradientTexture1D_83r3u")
 anim_speed_min = 1.0
 anim_speed_max = 1.0
@@ -57,9 +57,9 @@ anim_speed_max = 1.0
 show_behind_parent = true
 z_as_relative = false
 y_sort_enabled = true
-texture_filter = 1
-scale = Vector2(2, 1)
-skew = -0.616101
+texture_filter = 2
+scale = Vector2(2, 2)
+skew = -0.523599
 texture = ExtResource("1_yjx5c")
 hframes = 4
 vframes = 3
@@ -74,6 +74,7 @@ speed_scale = 1.25
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 texture_filter = 2
 material = SubResource("CanvasItemMaterial_j1ef1")
-amount = 32
+skew = -0.401426
 process_material = SubResource("ParticleProcessMaterial_wgcw2")
+texture = ExtResource("2_vupgx")
 lifetime = 0.75

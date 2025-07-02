@@ -9,9 +9,6 @@ var currentPath := PackedVector2Array()
 @onready var nextPos := position
 static var endPos : Vector2
 
-func _update_facing(from : Vector2,to : Vector2):
-	sprite.frame = Math.get_sprite_direction(from,to)
-
 func moveTo(end : Vector2):
 	startPos = nextPos
 	var list = PackedVector2Array()
@@ -25,10 +22,10 @@ func moveTo(end : Vector2):
 		list.append(end)
 		nextPos = end
 		if nextPos != startPos:
-			_update_facing(startPos,nextPos)
+			sprite.frame = Math.get_sprite_direction(startPos,nextPos)
 		PathFinder.set_cell_blocked(nextPos,true)
 		currentPath.remove_at(0)
-	FogReactiveTileMapLayer.update_fog(PathFinder.get_cell(nextPos), 10)
+	FogReactiveTileMapLayer.update_fog(PathFinder.get_cell(nextPos), stat.sight_range.get_total())
 	PathFinder.update_flow_field(list)
 
 func step():
@@ -46,7 +43,7 @@ func _ready():
 	instance = self
 	moveHandler = ActionPoints.new(stat.speed.get_total,step,process,0)
 	GameTick.instance.pushNext.connect(incTick)
-	FogReactiveTileMapLayer.update_fog(PathFinder.get_cell(nextPos), 10)
+	FogReactiveTileMapLayer.update_fog(PathFinder.get_cell(nextPos), stat.sight_range.get_total())
 
 func set_path(path : PackedVector2Array) -> void:
 	if currentPath.size() == 0 and path.size() > 0 and PathFinder.is_cell_blocked(path[0]) == false:

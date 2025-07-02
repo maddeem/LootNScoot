@@ -1,0 +1,18 @@
+[gd_scene load_steps=6 format=3 uid="uid://6psaobq1bxl2"]
+
+[ext_resource type="PackedScene" uid="uid://b22e3q4r0f5up" path="res://scenes/enemy.tscn" id="1_fjr5m"]
+[ext_resource type="Script" path="res://scripts/stat.gd" id="2_gvx6v"]
+[ext_resource type="Script" path="res://scripts/StatHolder.gd" id="3_wsmcq"]
+
+[sub_resource type="Resource" id="Resource_tae6g"]
+script = ExtResource("2_gvx6v")
+name = "speed"
+base_value = 1.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_qsntw"]
+script = ExtResource("3_wsmcq")
+StatList = Array[ExtResource("2_gvx6v")]([SubResource("Resource_tae6g"), null])
+
+[node name="Enemy" instance=ExtResource("1_fjr5m")]
+stat = SubResource("Resource_qsntw")

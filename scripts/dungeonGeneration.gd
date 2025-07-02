@@ -9,13 +9,10 @@ var open_cell := PackedVector2Array()
 func _ready():
 	var lvl1 : FogReactiveTileMapLayer = get_node(level1)
 	randomize()
-	var grid = DungeonMaker.generate_level_messy_bsp(width, height)
+	var grid = DungeonMaker.generate_level_city_walls(width, height)
 	for y in range(height):
 		for x in range(width):
-			if y == height - 1 or x == 0:
-				lvl1.set_cell_custom(Vector2i(x,y),0,Vector2i(0,0),1)
-				continue
-			if grid[x][y] == 1 or x == height - 1 or y == 0:
+			if grid[x][y] == 1 or x == height - 1 or y == 0 or y == height - 1 or x == 0:
 				lvl1.set_cell_custom(Vector2i(x,y),0,Vector2i(0,0))
 			else:
 				open_cell.append(lvl1.map_to_local(Vector2i(x,y)))

@@ -15,6 +15,10 @@ static func is_cell_visible(pos : Vector2) -> bool:
 	var p = PathFinder.get_cell(pos)
 	return cellStatus[p.x][p.y] == FOG_VISIBLE
 
+static func is_cell_explored(pos : Vector2) -> bool:
+	var p = PathFinder.get_cell(pos)
+	return cellStatus[p.x][p.y] != FOG_BLACK_MASK
+
 func set_cell_custom(coords: Vector2i, source_id: int = -1, atlas_coords: Vector2i = Vector2i(-1, -1), alternative_tile: int = 0):
 	if alternative_tile == 0:
 		alternative_tile = cellStatus[coords.x][coords.y]
@@ -90,7 +94,7 @@ static func _walk_line_with_callback2(p0 : Vector2i, p1 : Vector2i, condition: C
 	var last : int = 0;
 	while true:
 		walls_hit += int(condition.call(p0));
-		if walls_hit >= 1 and last == walls_hit or p0==p1:
+		if walls_hit >= 1 and last == walls_hit or p0==p1 or walls_hit > 2:
 			break
 		else:
 			action.call(p0)
@@ -101,8 +105,8 @@ static func _walk_line_with_callback2(p0 : Vector2i, p1 : Vector2i, condition: C
 		last = walls_hit;
 
 func make_cell_visible(pos: Vector2i):
-	pos.x = clampi(pos.x,0,dimensions.x)
-	pos.y = clampi(pos.y,0,dimensions.y)
+	pos.x = clampi(pos.x,1,dimensions.x-1)
+	pos.y = clampi(pos.y,0,dimensions.y-2)
 	if currentList.has(pos):
 		return
 	currentList[pos] = true

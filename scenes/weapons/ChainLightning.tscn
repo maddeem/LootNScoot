@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://xm1hxqqp4oav"]
+[gd_scene load_steps=13 format=3 uid="uid://xm1hxqqp4oav"]
 
 [ext_resource type="Script" path="res://scripts/stat.gd" id="1_aj1rt"]
 [ext_resource type="Script" path="res://scripts/StatHolder.gd" id="2_j8sya"]
@@ -55,53 +55,45 @@ func chain():
 	var castRange = stat.range.increment_and_use_total()
 	var toRemove = []
 	var toAdd = []
-	var hit = false
 	for l in lightnings:
 		if l == null: 
 			continue
 		if l.bounces > 0:
 			var enemies = PathFinder.get_enemies_in_range(l.targetLastPosition,castRange)
 			while enemies.size() > 0:
-				var e = enemies.pick_random()
+				var e : Enemy = enemies.pick_random()
 				enemies.erase(e)
 				if l.hitList.has(e):
 					continue
-				var light = lightning.new(self,effect,effect2,l.targetLastPosition,e.global_position,l.bounces-1)
+				var light = lightning.new(self,effect,effect2,l.targetLastPosition,e.nextPos,l.bounces-1)
 				toAdd.append(light)
 				light.hitList = l.hitList
 				light.hitList.append(e)
-				hit = true
-				e.destroy()
+				e.recieve_damage(stat.damage.get_total())
 				break
 		toRemove.append(l)
 	for l in toRemove:
 		lightnings.erase(l)
 		l.destroy()
 	lightnings.append_array(toAdd)
-	if hit:
-		chainHit.extend_turn(1)
 
 func step():
 	var castRange = stat.range.increment_and_use_total()
 	var enemies = PathFinder.get_enemies_in_range(global_position,castRange)
-	var hit = false
 	for i in range(min(enemies.size(),stat.multistrike.increment_and_use_total())):
 		var e = enemies.pick_random()
 		enemies.erase(e)
 		stat.bounce.increment()
-		var light = lightning.new(self,effect,effect2,global_position - Vector2(0,32),e.global_position,stat.bounce.use_total())
+		var light = lightning.new(self,effect,effect2,global_position - Vector2(0,32),e.nextPos,stat.bounce.use_total())
 		lightnings.append(light)
 		light.hitList.append(e)
-		e.destroy()
-		hit = true
-	if hit:
-		chainHit.extend_turn(1)
+		e.recieve_damage(stat.damage.get_total())
 "
 
 [sub_resource type="Resource" id="Resource_ww4c7"]
 script = ExtResource("1_aj1rt")
 name = "speed"
-base_value = 0.25
+base_value = 0.5
 min_value = 0.0
 
 [sub_resource type="Resource" id="Resource_ftnex"]
@@ -128,9 +120,15 @@ name = "chain_speed"
 base_value = 1.0
 min_value = 0.0
 
+[sub_resource type="Resource" id="Resource_d4ojh"]
+script = ExtResource("1_aj1rt")
+name = "damage"
+base_value = 25.0
+min_value = 0.0
+
 [sub_resource type="Resource" id="Resource_dqn6c"]
 script = ExtResource("2_j8sya")
-StatList = Array[ExtResource("1_aj1rt")]([SubResource("Resource_ww4c7"), SubResource("Resource_ftnex"), SubResource("Resource_gjasq"), SubResource("Resource_vnh18"), SubResource("Resource_llenr")])
+StatList = Array[ExtResource("1_aj1rt")]([SubResource("Resource_ww4c7"), SubResource("Resource_ftnex"), SubResource("Resource_gjasq"), SubResource("Resource_vnh18"), SubResource("Resource_llenr"), SubResource("Resource_d4ojh")])
 
 [node name="Chainlightning" type="Node2D"]
 script = SubResource("GDScript_ddwwi")

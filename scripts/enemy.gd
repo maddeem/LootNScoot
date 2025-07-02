@@ -8,16 +8,13 @@ const DEATH_MATERIAL = preload("res://materials/DeathMaterial.tres")
 var moveHandler : ActionPoints
 static var position2Enemy = {}
 
-func _update_facing(from : Vector2,to : Vector2):
-	Sprite.frame = Math.get_sprite_direction(from,to)
-
 func step():
 	startPos = nextPos
 	PathFinder.set_cell_blocked(nextPos,false)
 	position2Enemy.erase(PathFinder.get_cell(nextPos))
 	nextPos = PathFinder.get_flow_field(position)
 	if nextPos != startPos:
-		_update_facing(startPos,nextPos)
+		Sprite.frame = Math.get_sprite_direction(startPos,nextPos)
 	PathFinder.set_cell_blocked(nextPos,true)
 	position2Enemy[PathFinder.get_cell(nextPos)] = self
 	visible = FogReactiveTileMapLayer.is_cell_visible(nextPos)
@@ -26,6 +23,7 @@ func interp_turn(time: float) -> void:
 	position = lerp(startPos,nextPos,ease(time,-1.6))
 
 func _ready() -> void:
+	stat = stat.duplicate()
 	moveHandler = ActionPoints.new(stat.speed.get_total,step,interp_turn)
 	PathFinder.set_cell_blocked(startPos,true)
 	position2Enemy[PathFinder.get_cell(nextPos)] = self
@@ -44,3 +42,13 @@ func destroy():
 	var tween = create_tween()
 	tween.tween_method(_death_interp,0.0,1.0,GameTick.INTERP_TIME).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(queue_free)
+
+func recieve_damage(damage : float):
+	damage = max(0,damage - stat.armor.get_total())
+	var current = stat.health.subtract_current(damage)
+	if current == 0:
+		destroy()
+	var per = current/stat.health.get_total()
+	$Healthbar.modulate = lerp(Color.RED,Color.GREEN,per)
+	$Healthbar.value = per
+	$Healthbar.visible = true

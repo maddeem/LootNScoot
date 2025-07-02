@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://b22e3q4r0f5up"]
+[gd_scene load_steps=12 format=3 uid="uid://b22e3q4r0f5up"]
 
 [ext_resource type="Script" path="res://scripts/enemy.gd" id="1_yv6n4"]
 [ext_resource type="Script" path="res://scripts/stat.gd" id="2_5txq4"]
 [ext_resource type="Script" path="res://scripts/StatHolder.gd" id="3_vrpi1"]
 [ext_resource type="Material" uid="uid://cdbfnbigpj7n" path="res://materials/OutlineMaterial.tres" id="4_2pg1c"]
 [ext_resource type="Texture2D" uid="uid://cfwuy3uohanp1" path="res://assets/textures/atlases/atlas_1750296913.488.png" id="4_bbot6"]
+[ext_resource type="PackedScene" uid="uid://m8s5iens2yko" path="res://scenes/healthbar.tscn" id="4_f6g85"]
 
 [sub_resource type="Resource" id="Resource_tae6g"]
 script = ExtResource("2_5txq4")
@@ -12,13 +13,43 @@ name = "speed"
 base_value = 1.0
 min_value = 0.0
 
+[sub_resource type="Resource" id="Resource_d4u3j"]
+script = ExtResource("2_5txq4")
+name = "health"
+base_value = 100.0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_m5qv4"]
+script = ExtResource("2_5txq4")
+name = "armor"
+base_value = 0.0
+min_value = 0.0
+
 [sub_resource type="Resource" id="Resource_qn0mf"]
 script = ExtResource("3_vrpi1")
-StatList = Array[ExtResource("2_5txq4")]([SubResource("Resource_tae6g")])
+StatList = Array[ExtResource("2_5txq4")]([SubResource("Resource_tae6g"), SubResource("Resource_d4u3j"), SubResource("Resource_m5qv4")])
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ealyk"]
+light_mode = 1
 
 [node name="Enemy" type="Node2D"]
 script = ExtResource("1_yv6n4")
 stat = SubResource("Resource_qn0mf")
+
+[node name="Healthbar" parent="." instance=ExtResource("4_f6g85")]
+z_index = 1
+material = SubResource("CanvasItemMaterial_ealyk")
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = -64.0
+offset_bottom = -60.0
+grow_horizontal = 1
+grow_vertical = 1
+scale = Vector2(1.5, 1.5)
+size_flags_vertical = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = ExtResource("4_2pg1c")

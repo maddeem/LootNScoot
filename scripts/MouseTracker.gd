@@ -29,9 +29,15 @@ func _process(_delta: float) -> void:
 	var start = local_to_map(mpos)
 	var end = local_to_map(Player.instance.position)
 	var result : PackedVector2Array = PathFinder.calculate_path(start,end)
+	var list = PackedVector2Array()
 	if result != lastDisplayed:
 		for cell in lastDisplayed:
 			erase_cell(local_to_map(cell))
 		for cell in result:
-			set_cell(local_to_map(cell),0,Vector2i(0,0),1)
+			if FogReactiveTileMapLayer.is_cell_explored(cell):
+				list.append(cell)
+				set_cell(local_to_map(cell),0,Vector2i(0,0),1)
+			else:
+				break
+		result = list
 		lastDisplayed = result

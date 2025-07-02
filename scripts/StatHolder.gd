@@ -10,7 +10,7 @@ var _stats_by_name: Dictionary = {}
 
 func _build_stat_dictionary():
 	for stat_obj in StatList:
-		_stats_by_name[stat_obj.name] = stat_obj
+		_stats_by_name[stat_obj.name] = stat_obj.duplicate()
 
 func _get(property: StringName):
 	if _stats_by_name.has(property):
